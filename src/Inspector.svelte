@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   export let enabled = true;
+  export let toggleComboKey = 'control+shift';
   let open;
   let x;
   let y;
@@ -8,16 +9,39 @@
   $: ({ file, line, column } = parse(open));
 
   onMount(() => {
+    document.body.addEventListener('keydown', keydown);
     document.body.addEventListener('mouseover', mouseover);
     document.body.addEventListener('mousemove', mousemove);
     document.body.addEventListener('click', click);
 
     return () => {
+      document.body.removeEventListener('keydown', keydown);
       document.body.removeEventListener('mouseover', mouseover);
       document.body.removeEventListener('mousemove', mousemove);
       document.body.removeEventListener('click', click);
     };
   });
+
+  function keydown (event) {
+    const isCombo = toggleComboKey
+      .split('+')
+      .every(key => isKeyActive(key, event));
+    if (isCombo) {
+      enabled = !enabled;
+    }
+  }
+
+  function isKeyActive(key, event) {
+    switch (key) {
+      case "shift":
+      case "control":
+      case "alt":
+      case "meta":
+        return event.getModifierState(key.charAt(0).toUpperCase() + key.slice(1));
+      default:
+        return key === event.key.toLowerCase();
+    }
+  }
 
   function mousemove(event) {
     if (!enabled) return;
