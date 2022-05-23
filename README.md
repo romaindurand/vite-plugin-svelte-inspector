@@ -35,13 +35,22 @@ const config = {
   kit: {
     // ...
     vite: {
-      plugins: [Inspector()],
+      plugins: [Inspector({})],
     },
   },
 };
 
 export default config;
 ```
+
+### Configuration
+
+__toggleComboKey__
+
+_default: 'control+shift'_
+      
+e.g. : `Inspector({toggleComboKey: 'control+i'})`
+
 
 ### License
 
